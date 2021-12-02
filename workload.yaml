@@ -45,8 +45,8 @@ metadata:
   namespace: #@ data.values.namespace
 spec:
   redirectURIs:
-    - #@ "https://sample-rabbitmq-app.{}.{}/login/oauth2/code/sso".format(data.values.namespace, data.values.domain)
-    - "http://127.0.0.1:8080/login/oauth2/code/sso"
+    - #@ "https://sample-rabbitmq-app.{}.{}/login/oauth2/code/{}".format(data.values.namespace, data.values.domain, data.values.provider)
+    - #@ "http://127.0.0.1:8080/login/oauth2/code/{}".format(data.values.provider)
   requireUserConsent: false
   clientAuthenticationMethod: basic
   authorizationGrantTypes:
