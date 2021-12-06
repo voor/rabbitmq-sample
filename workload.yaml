@@ -8,7 +8,9 @@ apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
   labels:
+    apps.tanzu.vmware.com/has-tests: "true"
     apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: sample-rabbitmq-app
   name: sample-rabbitmq-app
   namespace: #@ data.values.namespace
 spec:
@@ -25,7 +27,7 @@ spec:
     ref:
       apiVersion: v1
       kind: Secret
-      name: sample-rabbitmq-app-registration-manual
+      name: sample-rabbitmq-app-registration
   source:
     git:
       ref:
