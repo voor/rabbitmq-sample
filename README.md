@@ -2,6 +2,32 @@
 
 This is a sample of a Java Spring app that works with the Tanzu Application Platform and Rabbitmq.
 
+## Install
+
+Easiest way is to use kapp and ytt:
+
+```
+kapp deploy -a $(basename $PWD) -f <(ytt -f workload.yaml -f values.yaml -v domain=${CHANGEME_DOMAIN}) -n apps -c
+```
+
+**NOTE** Currently refers to `sample-rabbitmq-app-registration-manual` in the service binding, this is taking the App SSO secret and modifying it so that it works with service binding:
+
+```
+apiVersion: v1
+stringData:
+  # See more here: https://github.com/spring-cloud/spring-cloud-bindings#spring-security-oauth2
+  type: oauth2 # Added, must always be this value "oauth2".
+  client-id: # changed from clientId
+  client-secret: # changed from clientSecret
+  issuer-uri: # changed from issuerURI
+  provider: # Added, this corresponds to spring.security.oauth2.client.registration.{name}.provider
+kind: Secret
+metadata:
+  name: sample-rabbitmq-app-registration-manual
+  namespace: apps
+type: Opaque
+```
+
 ## Dependencies
 
 1. [kubectl CLI](https://kubernetes.io/docs/tasks/tools/)

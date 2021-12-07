@@ -1,20 +1,66 @@
+
+#@ load("@ytt:base64", "base64")
+#@ load("@ytt:data", "data")
+#@ load("@ytt:yaml", "yaml")
+
 ---
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
   labels:
+    apps.tanzu.vmware.com/has-tests: "true"
     apps.tanzu.vmware.com/workload-type: web
+    app.kubernetes.io/part-of: sample-rabbitmq-app
   name: sample-rabbitmq-app
-  namespace: default
+  namespace: #@ data.values.namespace
 spec:
+  env:
+  - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_APPSSO_SCOPE
+    value: openid,profile,email
+  params:
+  - name: tekton-pipeline-name
+    value: developer-defined-tekton-pipeline
   serviceClaims:
   - name: rabbitmq
     ref:
       apiVersion: rabbitmq.com/v1beta1
       kind: RabbitmqCluster
-      name: rmq-1
+      name: sample-rabbitmq-app-cluster
+  - name: appsso
+    ref:
+      apiVersion: v1
+      kind: Secret
+      name: sample-rabbitmq-app-registration
   source:
     git:
       ref:
-        branch: main
-      url: https://github.com/gmrodgers/rabbitmq-sample
+        branch: add-security
+      url: https://github.com/voor/rabbitmq-sample.git
+---
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: sample-rabbitmq-app-cluster
+  namespace: #@ data.values.namespace
+---
+apiVersion: sso.apps.tanzu.vmware.com/v1alpha1
+kind: ClientRegistration
+metadata:
+  name: sample-rabbitmq-app-registration
+  namespace: #@ data.values.namespace
+spec:
+  redirectURIs:
+    - #@ "https://sample-rabbitmq-app.{}.{}/login/oauth2/code/{}".format(data.values.namespace, data.values.domain, data.values.provider)
+    - #@ "http://127.0.0.1:8080/login/oauth2/code/{}".format(data.values.provider)
+  requireUserConsent: false
+  clientAuthenticationMethod: basic
+  authorizationGrantTypes:
+    - "refresh_token"
+    - "authorization_code"
+  scopes:
+    - name: "openid"
+      description: "To indicate that the application intends to use OIDC to verify the user's identity"
+    - name: "email"
+      description: "The user's email"
+    - name: "profile"
+      description: "The user's profile information"

@@ -1,0 +1,17 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: sample-rabbitmq-app
+  description: Tanzu Sample RabbitMQ App
+  tags:
+    - app-accelerator
+    - java
+    - spring
+    - web
+    - tanzu
+  annotations:
+    'backstage.io/kubernetes-label-selector': 'app.kubernetes.io/part-of=sample-rabbitmq-app'
+spec:
+  type: service
+  lifecycle: experimental
+  owner: default-team
