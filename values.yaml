@@ -3,4 +3,4 @@
 
 namespace: "apps"
 domain: ""
-provider: sso
+provider: appsso
