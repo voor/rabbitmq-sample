@@ -4,6 +4,7 @@
 #@ load("@ytt:yaml", "yaml")
 
 ---
+#! This is the contract between the system and the developer; only exposes the values they can modify in their supply chain.
 apiVersion: carto.run/v1alpha1
 kind: Workload
 metadata:
@@ -15,11 +16,9 @@ metadata:
   namespace: #@ data.values.namespace
 spec:
   env:
+  #! This is a placeholder since Service Binding isn't passing scope down yet.
   - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_APPSSO_SCOPE
     value: openid,profile,email
-  params:
-  - name: tekton-pipeline-name
-    value: developer-defined-tekton-pipeline
   serviceClaims:
   - name: rabbitmq
     ref:
@@ -37,12 +36,14 @@ spec:
         branch: add-security
       url: https://github.com/voor/rabbitmq-sample.git
 ---
+#! Alternatively could be installed with a PackageInstall.
 apiVersion: rabbitmq.com/v1beta1
 kind: RabbitmqCluster
 metadata:
   name: sample-rabbitmq-app-cluster
   namespace: #@ data.values.namespace
 ---
+#! Alternatively could be installed with a PackageInstall.
 apiVersion: sso.apps.tanzu.vmware.com/v1alpha1
 kind: ClientRegistration
 metadata:

@@ -2,7 +2,15 @@ accelerator:
   displayName: sample-rabbitmq-app
   description: An app that utilises RabbitMQ
   iconUrl: https://raw.githubusercontent.com/simple-starters/icons/master/icon-tanzu-light.png
-  tags: []
+  tags:
+  - aswf
+  - rabbitmq
+  - sso
+  - security
+  - template
+  - java
+  - spring
+  - gradle
   options:
   - name: workloadName
     inputType: text
