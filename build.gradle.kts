@@ -17,6 +17,7 @@ repositories {
 }
 
 extra["springCloudVersion"] = "2021.0.0"
+extra["log4j2.version"] = "2.15.0"
 
 dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
